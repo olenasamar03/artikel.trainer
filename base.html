@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtikelTrainer{% if title %} — {{ title }}{% endif %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #F2F2F7;
+      --surface: #FFFFFF;
+      --surface2:#E8E8ED;
+      --border:  #D1D1D6;
+      --text:    #1C1C1E;
+      --text2:   #636366;
+      --text3:   #AEAEB2;
+      --der:     #2C76E5;
+      --der-bg:  #EAF1FD;
+      --die:     #D93025;
+      --die-bg:  #FDECEA;
+      --das:     #30A64A;
+      --das-bg:  #E8F7EC;
+      --r-pill:  999px;
+      --r-card:  22px;
+      --r-btn:   16px;
+      --shadow:  0 2px 12px rgba(0,0,0,.08);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,.14);
+      --font: 'Nunito', sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .shell {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 40px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 12px;
+    }
+    .app-title {
+      font-size: 18px; font-weight: 800; letter-spacing: -.3px;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface); border-radius: var(--r-pill);
+      padding: 5px 12px 5px 6px; box-shadow: var(--shadow);
+      font-size: 13px; font-weight: 700;
+      text-decoration: none; color: var(--text);
+    }
+    .user-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--der), var(--das));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #fff; font-weight: 800;
+    }
+    .logout-lnk {
+      font-size: 12px; color: var(--text3); text-decoration: none;
+      padding: 4px 8px; border-radius: 8px; transition: color .15s;
+    }
+    .logout-lnk:hover { color: var(--die); }
+
+    /* ── NAV ── */
+    .nav-pills {
+      display: flex; gap: 10px; padding: 0 20px; margin-bottom: 20px;
+    }
+    .pill-btn {
+      flex: 1; padding: 11px 0; background: var(--surface2); border: none;
+      border-radius: var(--r-pill); text-decoration: none; display: block;
+      text-align: center; font-size: 14px; font-weight: 700; color: var(--text2);
+      font-family: var(--font); transition: all .18s;
+    }
+    .pill-btn.active { background: var(--text); color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+    .pill-btn:hover:not(.active) { background: var(--border); }
+
+    /* ── FLASH ── */
+    .flash-wrap { padding: 0 20px 12px; }
+    .flash {
+      padding: 12px 16px; border-radius: var(--r-btn); font-size: 13px; font-weight: 600;
+    }
+    .flash.error   { background: var(--die-bg); color: var(--die); }
+    .flash.success { background: var(--das-bg); color: var(--das); }
+    .flash.warning { background: #FFF8E1; color: #B45309; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface); border-radius: var(--r-card);
+      box-shadow: var(--shadow); padding: 20px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      display: block; width: 100%; padding: 15px;
+      background: var(--text); color: #fff; border: none;
+      border-radius: var(--r-pill); font-size: 16px; font-weight: 800;
+      font-family: var(--font); cursor: pointer; text-align: center;
+      text-decoration: none; transition: all .18s;
+    }
+    .btn-primary:hover { background: var(--der); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(44,118,229,.3); }
+
+    /* ── FORM ── */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: var(--text2); margin-bottom: 6px; letter-spacing: .3px;
+    }
+    .field input {
+      width: 100%; padding: 13px 16px; border: 2px solid var(--border);
+      border-radius: var(--r-btn); background: var(--bg);
+      font-family: var(--font); font-size: 15px; color: var(--text); outline: none;
+      transition: border-color .18s;
+    }
+    .field input:focus { border-color: var(--der); }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 99px;
+      font-size: 13px; font-weight: 800;
+    }
+    .badge-der { background: var(--der-bg); color: var(--der); }
+    .badge-die { background: var(--die-bg); color: var(--die); }
+    .badge-das { background: var(--das-bg); color: var(--das); }
+
+    /* ── MISC ── */
+    .section-lbl {
+      font-size: 11px; font-weight: 800; color: var(--text3);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px;
+    }
+    .px20 { padding-left: 20px; padding-right: 20px; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+<div class="shell">
+
+  {% if session.get('user_id') %}
+  <div class="topbar">
+    <div class="app-title">ArtikelTrainer</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="user-chip">
+        <div class="user-avatar">{{ session.login[0]|upper }}</div>
+        {{ session.login }}
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-lnk">вихід</a>
+    </div>
+  </div>
+  <div class="nav-pills">
+    <a href="{{ url_for('progress') }}"   class="pill-btn {% if request.endpoint == 'progress' %}active{% endif %}">Прогрес</a>
+    <a href="{{ url_for('train') }}"      class="pill-btn {% if request.endpoint == 'train' %}active{% endif %}">Тренажер</a>
+    <a href="{{ url_for('dictionary') }}" class="pill-btn {% if request.endpoint == 'dictionary' %}active{% endif %}">Словник</a>
+  </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-wrap">
+      {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+</div>
+</body>
+</html>

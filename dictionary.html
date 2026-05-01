@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% set title = 'Словник' %}
+{% block head %}
+<style>
+.px20 { padding: 0 20px; }
+.search-inp { width:100%; padding:11px 16px; border:none; border-radius:var(--r-pill); background:var(--surface); font-family:var(--font); font-size:14px; color:var(--text); outline:none; box-shadow:var(--shadow); margin-bottom:12px; }
+.search-inp::placeholder { color:var(--text3); }
+
+.filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.fchip { padding:6px 14px; border:none; border-radius:var(--r-pill); background:var(--surface); font-family:var(--font); font-size:13px; font-weight:700; color:var(--text2); cursor:pointer; box-shadow:var(--shadow); text-decoration:none; display:inline-block; transition:all .15s; }
+.fchip:hover { background:var(--border); }
+.fchip.active-all { background:var(--text); color:#fff; }
+.fchip.active-der { background:var(--der); color:#fff; }
+.fchip.active-die { background:var(--die); color:#fff; }
+.fchip.active-das { background:var(--das); color:#fff; }
+
+.dict-card { background:var(--surface); border-radius:var(--r-card); box-shadow:var(--shadow); overflow:hidden; }
+.dict-head { display:grid; grid-template-columns:68px 1fr 1fr 70px; gap:6px; padding:10px 14px; border-bottom:1px solid var(--bg); }
+.dict-head span { font-size:10px; font-weight:800; color:var(--text3); text-transform:uppercase; letter-spacing:.6px; }
+.dict-row { display:grid; grid-template-columns:68px 1fr 1fr 70px; gap:6px; padding:12px 14px; border-bottom:1px solid var(--bg); align-items:center; }
+.dict-row:last-child { border-bottom:none; }
+.dict-row:hover { background:var(--bg); }
+.dict-word { font-size:13px; font-weight:700; }
+.dict-trans { font-size:12px; color:var(--text2); }
+.dict-cat { font-size:10px; color:var(--text3); background:var(--bg); padding:2px 7px; border-radius:6px; display:inline-block; font-weight:700; }
+.empty { text-align:center; padding:30px; font-size:14px; color:var(--text3); font-weight:600; }
+.count-row { text-align:center; padding:10px; font-size:12px; color:var(--text3); font-weight:600; border-top:1px solid var(--bg); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="px20">
+
+  <!-- Пошук -->
+  <form method="GET" action="{{ url_for('dictionary') }}" id="filter-form">
+    <input class="search-inp" type="text" name="search"
+           placeholder="🔍  Пошук слів..." value="{{ search }}"
+           oninput="document.getElementById('filter-form').submit()">
+
+    <div class="filter-row">
+      <!-- Фільтр за артиклем -->
+      <a href="{{ url_for('dictionary', category=selected_category, search=search) }}"
+         class="fchip {% if not selected_article %}active-all{% endif %}">Усі</a>
+      <a href="{{ url_for('dictionary', article='die', category=selected_category, search=search) }}"
+         class="fchip {% if selected_article=='die' %}active-die{% endif %}">die</a>
+      <a href="{{ url_for('dictionary', article='der', category=selected_category, search=search) }}"
+         class="fchip {% if selected_article=='der' %}active-der{% endif %}">der</a>
+      <a href="{{ url_for('dictionary', article='das', category=selected_category, search=search) }}"
+         class="fchip {% if selected_article=='das' %}active-das{% endif %}">das</a>
+
+      <!-- Фільтр за категорією -->
+      {% for cat in categories %}
+      <a href="{{ url_for('dictionary', article=selected_article, category=cat, search=search) }}"
+         class="fchip {% if selected_category==cat %}active-all{% endif %}">{{ cat }}</a>
+      {% endfor %}
+      {% if selected_category %}
+      <a href="{{ url_for('dictionary', article=selected_article, search=search) }}"
+         class="fchip" style="color:var(--die)">✕ скинути</a>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- Таблиця слів -->
+  <div class="dict-card">
+    <div class="dict-head">
+      <span>Артикль</span>
+      <span>Слово</span>
+      <span>Переклад</span>
+      <span>Категорія</span>
+    </div>
+
+    {% if words %}
+      {% for w in words %}
+      <div class="dict-row">
+        <div><span class="badge badge-{{ w.article }}">{{ w.article }}</span></div>
+        <div class="dict-word">{{ w.german }}</div>
+        <div class="dict-trans">{{ w.ukrainian }}</div>
+        <div><span class="dict-cat">{{ w.category }}</span></div>
+      </div>
+      {% endfor %}
+      <div class="count-row">Показано {{ words|length }} слів</div>
+    {% else %}
+      <div class="empty">Нічого не знайдено</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% set title = 'Прогрес' %}
+{% block head %}
+<style>
+.px20 { padding: 0 20px; }
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.stat-card { background:var(--surface); border-radius:var(--r-card); padding:18px 14px; box-shadow:var(--shadow); text-align:center; }
+.stat-lbl { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+.stat-val { font-size:30px; font-weight:800; color:var(--text); line-height:1; }
+.stat-sub { font-size:12px; color:var(--text2); margin-top:3px; font-weight:600; }
+
+.activity-card { background:var(--surface); border-radius:var(--r-card); padding:20px 18px; box-shadow:var(--shadow); margin-bottom:14px; }
+.act-title { font-size:15px; font-weight:800; margin-bottom:16px; }
+.day-row { display:flex; gap:6px; justify-content:space-between; }
+.day-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.day-bubble { width:38px; height:38px; border-radius:50%; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:var(--text3); }
+.day-bubble.done { background:var(--text); color:#fff; }
+.day-bubble.today { background:var(--der); color:#fff; box-shadow:0 4px 14px rgba(44,118,229,.38); }
+.day-lbl { font-size:10px; color:var(--text3); font-weight:700; }
+
+.po-card { background:var(--surface); border-radius:var(--r-card); padding:18px; box-shadow:var(--shadow); margin-bottom:14px; }
+.po-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.po-lbl { font-size:13px; font-weight:700; color:var(--text2); }
+.po-val { font-size:13px; font-weight:800; color:var(--text); }
+.po-track { height:8px; background:var(--surface2); border-radius:99px; overflow:hidden; }
+.po-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--der),var(--das)); }
+
+.quick-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.quick-btn { display:flex; align-items:center; gap:12px; padding:16px 14px; border:1px solid var(--border); border-radius:var(--r-card); background:var(--surface); text-decoration:none; color:var(--text); box-shadow:var(--shadow); transition:all .18s; }
+.quick-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); border-color:var(--der); }
+.qi { font-size:24px; flex-shrink:0; }
+.qt { font-size:13px; font-weight:700; display:block; }
+.qs { font-size:11px; color:var(--text2); display:block; margin-top:2px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="px20">
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-lbl">Слів вивчено</div>
+      <div class="stat-val">{{ learned }}</div>
+      <div class="stat-sub">з {{ total_words }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Серія</div>
+      <div class="stat-val">{{ user.streak }}</div>
+      <div class="stat-sub">днів поспіль</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Точність</div>
+      <div class="stat-val">{{ accuracy if accuracy is not none else '–' }}{% if accuracy is not none %}%{% endif %}</div>
+      <div class="stat-sub">цього тижні</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Рівень</div>
+      <div class="stat-val">A2</div>
+      <div class="stat-sub">середній</div>
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div class="act-title">Активність за тиждень</div>
+    <div class="day-row">
+      <div class="day-col"><div class="day-bubble done">✓</div><div class="day-lbl">Пн</div></div>
+      <div class="day-col"><div class="day-bubble done">✓</div><div class="day-lbl">Вт</div></div>
+      <div class="day-col"><div class="day-bubble done">✓</div><div class="day-lbl">Ср</div></div>
+      <div class="day-col"><div class="day-bubble done">✓</div><div class="day-lbl">Чт</div></div>
+      <div class="day-col"><div class="day-bubble done">✓</div><div class="day-lbl">Пт</div></div>
+      <div class="day-col"><div class="day-bubble today">✓</div><div class="day-lbl">Сб</div></div>
+      <div class="day-col"><div class="day-bubble">–</div><div class="day-lbl">Нд</div></div>
+    </div>
+  </div>
+
+  <div class="po-card">
+    <div class="po-row">
+      <span class="po-lbl">Загальний прогрес</span>
+      <span class="po-val">{{ pct }}%</span>
+    </div>
+    <div class="po-track">
+      <div class="po-fill" style="width:{{ pct }}%"></div>
+    </div>
+  </div>
+
+  <div class="quick-row">
+    <a href="{{ url_for('train') }}" class="quick-btn">
+      <span class="qi">▶️</span>
+      <span><span class="qt">Тренування</span><span class="qs">Почати зараз</span></span>
+    </a>
+    <a href="{{ url_for('dictionary') }}" class="quick-btn">
+      <span class="qi">📖</span>
+      <span><span class="qt">Словник</span><span class="qs">{{ total_words }} слів</span></span>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
